@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 export const CONFIG = {
   // 서버 설정
-  PORT: parseInt(process.env.PORT || '3001', 10),
+  PORT: parseInt(process.env.PORT || '8080', 10),
 
   // Supabase 설정
   SUPABASE_URL: process.env.SUPABASE_URL || '',
