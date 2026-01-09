@@ -95,6 +95,28 @@ export class DockEventsService {
     }
   }
 
+  // 이벤트 삭제 처리
+  static async deleteEvent(eventId: string): Promise<boolean> {
+    try {
+      const { data, error } = await supabase
+        .from('dock_events')
+        .delete()
+        .eq('id', eventId)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Failed to delete event:', error);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      return false;
+    }
+  }
+
   // 이벤트 목록 조회 (동기화용)
   static async getRecentEvents(dockSetId?: 1 | 2, limit: number = 50): Promise<DockEvent[]> {
     try {

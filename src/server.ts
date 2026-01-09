@@ -92,6 +92,39 @@ io.on('connection', (socket: TypedSocket) => {
     }
   });
 
+  // 이벤트 삭제 이벤트 처리 (관리자 → 서버)
+  socket.on('client:delete_event', async (data) => {
+    try {
+      console.log(`🗑️ Event delete request:`, data);
+
+      // 데이터베이스에서 이벤트 삭제 처리
+      const success = await DockEventsService.deleteEvent(data.eventId);
+
+      if (!success) {
+        socket.emit('server:error', {
+          code: 'DELETE_EVENT_FAILED',
+          message: 'Failed to delete event',
+          clientRequestId: data.clientRequestId,
+        });
+        return;
+      }
+
+      // 모든 클라이언트에게 이벤트 삭제 알림
+      io.emit('server:event_deleted', {
+        eventId: data.eventId,
+      });
+
+      console.log(`🗑️ Event deleted: ${data.eventId}`);
+    } catch (error) {
+      console.error('Error handling delete_event:', error);
+      socket.emit('server:error', {
+        code: 'INTERNAL_ERROR',
+        message: 'Internal server error',
+        clientRequestId: data.clientRequestId,
+      });
+    }
+  });
+
   // 동기화 이벤트 처리
   socket.on('client:sync', async (data) => {
     try {

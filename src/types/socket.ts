@@ -20,6 +20,12 @@ export interface ClientToServerEvents {
     dockSetId?: 1 | 2;
     limit?: number;
   }) => void;
+
+  // 이벤트 삭제 이벤트 (관리자 → 서버)
+  'client:delete_event': (data: {
+    eventId: string;
+    clientRequestId: string;
+  }) => void;
 }
 
 // 서버에서 클라이언트로 보내는 이벤트
@@ -46,6 +52,11 @@ export interface ServerToClientEvents {
     code: string;
     message: string;
     clientRequestId?: string;
+  }) => void;
+
+  // 이벤트 삭제 알림 (서버 → 모두)
+  'server:event_deleted': (data: {
+    eventId: string;
   }) => void;
 }
 
